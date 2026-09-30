@@ -1,95 +1,39 @@
-const path = require('path');
-const alias = require('@rollup/plugin-alias');
-const replace = require('@rollup/plugin-replace');
-const resolve = require('@rollup/plugin-node-resolve');
-const commonjs = require('@rollup/plugin-commonjs');
-const terser = require('@rollup/plugin-terser');
+// const config =  process.env.NODE_ENV
+const path = require('path')
+const alias = require('@rollup/plugin-alias')
 
-const TARGET = process.env.TARGET || 'web-full-dev';
+const target = process.env.TARGET
+const resolvePath = (_path) => path.resolve(__dirname, '../', _path)
 
-const resolvePath = _path => path.resolve(__dirname, '../', _path);
+console.log('target ',target)
 
-// 构建目标配置表
+
+
+
 const builds = {
-  // Web 平台完整版 - 开发版 (UMD)
   'web-full-dev': {
-    entry: resolvePath('src/platforms/web/entry-runtime-with-compiler.js'),
-    dest: resolvePath('dist/vue.js'),
+    entry: 'src/platforms/web/entry-runtime-with-compiler.js',
+    dest: 'dist/vue.js',
     format: 'umd',
-    env: 'development',
-    name: 'Vue',
     banner: ''
   }
-};
+}
 
-// 生成单个构建配置
-function genConfig(name) {
-  const opts = builds[name];
-  if (!opts) {
-    throw new Error(`Unknown build target: ${name}`);
-  }
 
-  const plugins = [
-    // 路径别名（Vue 2 源码大量使用）
-    // alias({
-    //   entries: [
-    //     { find: 'vue', replacement: resolvePath('src/platforms/web/entry-runtime-with-compiler.js') },
-    //     { find: 'compiler', replacement: resolvePath('src/compiler') },
-    //     { find: 'core', replacement: resolvePath('src/core') },
-    //     { find: 'shared', replacement: resolvePath('src/shared') },
-    //     { find: 'web', replacement: resolvePath('src/platforms/web') },
-    //     { find: 'server', replacement: resolvePath('src/server') },
-    //     { find: 'sfc', replacement: resolvePath('src/sfc') },
-    //     { find: 'he', replacement: resolvePath('src/compiler/parser/html-entities.js') }
-    //   ]
-    // }),
-    // 替换环境变量
-    replace({
-      preventAssignment: true,
-      values: {
-        'process.env.NODE_ENV': JSON.stringify(opts.env),
-        __DEV__: opts.env === 'development' ? 'true' : 'false',
-        __WEEX__: 'false',
-        __VERSION__: JSON.stringify('2.x.x')
-      }
-    }),
-    // 解析 node_modules
-    resolve({
-      browser: true,
-      extensions: ['.js', '.json']
-    }),
-    // CommonJS 兼容
-    commonjs()
-  ];
+function getConfig(name){
+  const build = builds[name]
 
-  // 生产环境压缩
-  if (opts.useTerser) {
-    plugins.push(terser());
-  }
-
-  const config = {
-    input: opts.entry,
+  return {
+    input: resolvePath(build.entry),
     output: {
-      file: opts.dest,
-      format: opts.format,
-      name: opts.name || 'Vue',
-      exports: 'auto',
-      banner: opts.banner || ''
-    },
-    plugins,
-    external: opts.external || []
-  };
-
-  console.log(`[build] ${name} -> ${path.basename(opts.dest)} (${opts.format}, ${opts.env})`);
-  return config;
+      file: build.dest,
+      format: build.format,
+      name: 'Vue',
+      banner: build.banner
+    }
+  }
 }
 
-// 支持多目标：TARGET=a,b,c
-let config;
-if (TARGET.includes(',')) {
-  config = TARGET.split(',').map(t => genConfig(t.trim()));
-} else {
-  config = genConfig(TARGET);
-}
 
-module.exports = config;
+
+module.exports = getConfig(target)
