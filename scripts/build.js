@@ -15,7 +15,7 @@ const banner =
 
 
 // const p1 = path.resolve('b')
-// console.log('p1 == ',path.join('a','b','../c'))
+console.log('p1 == ',path.resolve('a','/b'))
 
 
 const resolve = p => {
