@@ -13,6 +13,10 @@ const banner =
   ' * Released under the MIT License.\n' +
   ' */'
 
+
+const s = Symbol('c')
+console.log(typeof s);
+
 const resolve = p => {
   const base = p.split('/')[0]
   if(aliases[base]){
