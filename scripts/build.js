@@ -14,8 +14,7 @@ const banner =
   ' */'
 
 
-const s = Symbol('c')
-console.log(typeof s);
+
 
 const resolve = p => {
   const base = p.split('/')[0]
