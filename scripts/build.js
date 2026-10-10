@@ -15,8 +15,9 @@ const banner =
 
 
 // const p1 = path.resolve('b')
-console.log('p1 == ',path.resolve('a','/b'))
+// console.log('p1 == ',path.resolve('a','/b'))
 
+console.log('aliases == ')
 
 const resolve = p => {
   const base = p.split('/')[0]
