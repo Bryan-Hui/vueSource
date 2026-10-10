@@ -13,12 +13,6 @@ const banner =
   ' * Released under the MIT License.\n' +
   ' */'
 
-
-// const p1 = path.resolve('b')
-// console.log('p1 == ',path.resolve('a','/b'))
-
-console.log('aliases == ')
-
 const resolve = p => {
   const base = p.split('/')[0]
   if(aliases[base]){
