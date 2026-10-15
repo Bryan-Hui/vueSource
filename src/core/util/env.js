@@ -4,8 +4,8 @@
 export const hasProto = '__proto__' in {} //检测当前环境是否支持__proto__,不兼容的情况下使用降级方案
 
 // Browser environment sniffing
-export const inBrowser = typeof window !== 'undefined'
-export const inWeex = typeof WXEnvironment !== 'undefined' && !!WXEnvironment.platform
+export const inBrowser = typeof window !== 'undefined' //是否是浏览器环境
+export const inWeex = typeof WXEnvironment !== 'undefined' && !!WXEnvironment.platform //判断是不是weex环境
 export const weexPlatform = inWeex && WXEnvironment.platform.toLowerCase()
 export const UA = inBrowser && window.navigator.userAgent.toLowerCase()
 export const isIE = UA && /msie|trident/.test(UA)
