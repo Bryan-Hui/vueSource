@@ -1,5 +1,3 @@
-/* @flow */
-
 import { makeMap } from 'shared/util'
 
 // these are reserved for web because they are directly compiled away
@@ -8,7 +6,7 @@ export const isReservedAttr = makeMap('style,class')
 
 // attributes that should be using props for binding
 const acceptValue = makeMap('input,textarea,option,select,progress')
-export const mustUseProp = (tag: string, type: ?string, attr: string): boolean => {
+export const mustUseProp = (tag, type, attr) => {
   return (
     (attr === 'value' && acceptValue(tag)) && type !== 'button' ||
     (attr === 'selected' && tag === 'option') ||
@@ -21,7 +19,7 @@ export const isEnumeratedAttr = makeMap('contenteditable,draggable,spellcheck')
 
 const isValidContentEditableValue = makeMap('events,caret,typing,plaintext-only')
 
-export const convertEnumeratedValue = (key: string, value: any) => {
+export const convertEnumeratedValue = (key, value) => {
   return isFalsyAttrValue(value) || value === 'false'
     ? 'false'
     // allow arbitrary string value for contenteditable
@@ -41,14 +39,14 @@ export const isBooleanAttr = makeMap(
 
 export const xlinkNS = 'http://www.w3.org/1999/xlink'
 
-export const isXlink = (name: string): boolean => {
+export const isXlink = (name) => {
   return name.charAt(5) === ':' && name.slice(0, 5) === 'xlink'
 }
 
-export const getXlinkProp = (name: string): string => {
+export const getXlinkProp = (name) => {
   return isXlink(name) ? name.slice(6, name.length) : ''
 }
 
-export const isFalsyAttrValue = (val: any): boolean => {
+export const isFalsyAttrValue = (val) => {
   return val == null || val === false
 }
