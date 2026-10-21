@@ -1,5 +1,3 @@
-/* @flow */
-
 import config from '../config'
 import { warn } from './debug'
 import { set } from '../observer/index'
@@ -46,7 +44,7 @@ if (process.env.NODE_ENV !== 'production') {
 /**
  * Helper that recursively merges two data objects together.
  */
-function mergeData(to: Object, from: ?Object): Object {
+function mergeData(to, from) {
   if (!from) return to
   let key, toVal, fromVal
 
@@ -77,10 +75,10 @@ function mergeData(to: Object, from: ?Object): Object {
  * Data
  */
 export function mergeDataOrFn(
-  parentVal: any,
-  childVal: any,
-  vm?: Component
-): ?Function {
+  parentVal,
+  childVal,
+  vm
+) {
   if (!vm) {
     // in a Vue.extend merge, both should be functions
     if (!childVal) {
@@ -119,10 +117,10 @@ export function mergeDataOrFn(
 }
 
 strats.data = function (
-  parentVal: any,
-  childVal: any,
-  vm?: Component
-): ?Function {
+  parentVal,
+  childVal,
+  vm
+) {
   if (!vm) {
     if (childVal && typeof childVal !== 'function') {
       process.env.NODE_ENV !== 'production' && warn(
@@ -144,9 +142,9 @@ strats.data = function (
  * Hooks and props are merged as arrays.
  */
 function mergeHook(
-  parentVal: ?Array<Function>,
-  childVal: ?Function | ?Array<Function>
-): ?Array<Function> {
+  parentVal,
+  childVal
+) {
   const res = childVal
     ? parentVal
       ? parentVal.concat(childVal)
@@ -184,11 +182,11 @@ LIFECYCLE_HOOKS.forEach(hook => {
  * options and parent options.
  */
 function mergeAssets(
-  parentVal: ?Object,
-  childVal: ?Object,
-  vm?: Component,
-  key: string
-): Object {
+  parentVal,
+  childVal,
+  vm,
+  key
+) {
   const res = Object.create(parentVal || null)
   if (childVal) {
     process.env.NODE_ENV !== 'production' && assertObjectType(key, childVal, vm)
@@ -209,11 +207,11 @@ ASSET_TYPES.forEach(function (type) {
  * another, so we merge them as arrays.
  */
 strats.watch = function (
-  parentVal: ?Object,
-  childVal: ?Object,
-  vm?: Component,
-  key: string
-): ?Object {
+  parentVal,
+  childVal,
+  vm,
+  key
+) {
   // work around Firefox's Object.prototype.watch...
   if (parentVal === nativeWatch) parentVal = undefined
   if (childVal === nativeWatch) childVal = undefined
@@ -245,11 +243,11 @@ strats.props =
   strats.methods =
   strats.inject =
   strats.computed = function (
-    parentVal: ?Object,
-    childVal: ?Object,
-    vm?: Component,
-    key: string
-  ): ?Object {
+    parentVal,
+    childVal,
+    vm,
+    key
+  ) {
     if (childVal && process.env.NODE_ENV !== 'production') {
       assertObjectType(key, childVal, vm)
     }
@@ -264,7 +262,7 @@ strats.provide = mergeDataOrFn
 /**
  * Default strategy.
  */
-const defaultStrat = function (parentVal: any, childVal: any): any {
+const defaultStrat = function (parentVal, childVal) {
   return childVal === undefined
     ? parentVal
     : childVal
@@ -273,13 +271,13 @@ const defaultStrat = function (parentVal: any, childVal: any): any {
 /**
  * Validate component names
  */
-function checkComponents(options: Object) {
+function checkComponents(options) {
   for (const key in options.components) {
     validateComponentName(key)
   }
 }
 
-export function validateComponentName(name: string) {
+export function validateComponentName(name) {
   if (!new RegExp(`^[a-zA-Z][\\-\\.0-9_${unicodeLetters}]*$`).test(name)) {
     warn(
       'Invalid component name: "' + name + '". Component names ' +
@@ -298,7 +296,7 @@ export function validateComponentName(name: string) {
  * Ensure all props option syntax are normalized into the
  * Object-based format.
  */
-function normalizeProps(options: Object, vm: ?Component) {
+function normalizeProps(options, vm) {
   const props = options.props
   if (!props) return
   const res = {}
@@ -335,7 +333,7 @@ function normalizeProps(options: Object, vm: ?Component) {
 /**
  * Normalize all injections into Object-based format
  */
-function normalizeInject(options: Object, vm: ?Component) {
+function normalizeInject(options, vm) {
   const inject = options.inject
   if (!inject) return
   const normalized = options.inject = {}
@@ -362,7 +360,7 @@ function normalizeInject(options: Object, vm: ?Component) {
 /**
  * Normalize raw function directives into object format.
  */
-function normalizeDirectives(options: Object) {
+function normalizeDirectives(options) {
   const dirs = options.directives
   if (dirs) {
     for (const key in dirs) {
@@ -374,7 +372,7 @@ function normalizeDirectives(options: Object) {
   }
 }
 
-function assertObjectType(name: string, value: any, vm: ?Component) {
+function assertObjectType(name, value, vm) {
   if (!isPlainObject(value)) {
     warn(
       `Invalid value for option "${name}": expected an Object, ` +
@@ -394,10 +392,10 @@ function assertObjectType(name: string, value: any, vm: ?Component) {
  * @param vm     - 当前 Vue 实例，实例化时传入；继承合并时不传
  */
 export function mergeOptions(
-  parent: Object,
-  child: Object,
-  vm?: Component
-): Object {
+  parent,
+  child,
+  vm
+) {
   // 非生产环境校验 components 里的组件名是否合法
   if (process.env.NODE_ENV !== 'production') {
     checkComponents(child)
@@ -452,11 +450,11 @@ export function mergeOptions(
  * to assets defined in its ancestor chain.
  */
 export function resolveAsset(
-  options: Object,
-  type: string,
-  id: string,
-  warnMissing?: boolean
-): any {
+  options,
+  type,
+  id,
+  warnMissing
+) {
   /* istanbul ignore if */
   if (typeof id !== 'string') {
     return

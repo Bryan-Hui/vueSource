@@ -1,11 +1,9 @@
-/* @flow */
-
 import config from '../config'
 import { warn } from './debug'
 import { inBrowser, inWeex } from './env'
 import { isPromise } from 'shared/util'
 
-export function handleError (err: Error, vm: any, info: string) {
+export function handleError (err, vm, info) {
   if (vm) {
     let cur = vm
     while ((cur = cur.$parent)) {
@@ -26,11 +24,11 @@ export function handleError (err: Error, vm: any, info: string) {
 }
 
 export function invokeWithErrorHandling (
-  handler: Function,
-  context: any,
-  args: null | any[],
-  vm: any,
-  info: string
+  handler,
+  context,
+  args,
+  vm,
+  info
 ) {
   let res
   try {
